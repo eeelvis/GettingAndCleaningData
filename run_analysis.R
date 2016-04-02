@@ -1,69 +1,62 @@
-# Analysis 
+# load Test and Train files
+xTrain <- read.table("C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\UCI HAR Dataset\\train\\X_train.txt", sep="")
+yTrain <- read.table("C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\UCI HAR Dataset\\train\\y_train.txt", sep="")
+xTest <- read.table("C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\UCI HAR Dataset\\test\\X_test.txt", sep="")
+yTest <- read.table("C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\UCI HAR Dataset\\test\\y_test.txt", sep="")
 
-# variable that specifies the path to the data
-yourPath = "/home/elvis/GettingAndCleaningData/UCIHARDataset/"
-
-# load x and y for Test and Train
-xTrain = read.table(paste(yourPath, "train/X_train.txt", sep=""))
-yTrain = read.table(paste(yourPath, "train/y_train.txt", sep=""))
-xTest = read.table(paste(yourPath, "test/X_test.txt", sep=""))
-yTest = read.table(paste(yourPath, "test/y_test.txt", sep=""))
-
-
-# load variable names
-varNames = read.table(paste(yourPath, "features.txt", sep="")); varNames = varNames[,2];
-activityLabels = read.table(paste(yourPath, "activity_labels.txt", sep="")); 
-
+# load names
+names <- read.table("C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\UCI HAR Dataset\\features.txt", sep=""); names <- names[,2];
+activityLabels <- read.table("C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\UCI HAR Dataset\\activity_labels.txt", sep="") 
 
 # correctly name the columns of the data
-names(xTrain) <- varNames
-names(xTest) <- varNames
+names(xTrain) <- names
+names(xTest) <- names
 
-## Merge Test and Train
-xMatrix = rbind(xTest,xTrain) # from 1 to 7532 they were used for training, from 7533 to 10299 they were used for testing
-yVector = rbind(yTest,yTrain) # from 1 to 7532 they were used for training, from 7533 to 10299 they were used the result of testing
+# merge Test and Train
+xMatrix <- rbind(xTest, xTrain)
+yVector <- rbind(yTest, yTrain)
 
-# which variables correspond to means 
-whichMeans = grep("[m]ean", varNames)
+# locate variables equal means 
+vmeans = grep("[m]ean", names)
 
 # correspondingly update xMatrix
-xMatrixReduced = xMatrix[,whichMeans]
+xMatrixReduced = xMatrix[,vmeans]
 
-# write it:
-write.csv(xMatrixReduced,file=paste(yourPath, "xMatrixReduced.csv", sep=""))
+# create a csv with result of matrix reduced
+write.csv(xMatrixReduced, file = "C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\xMatrixCut.csv", sep="")
 
-yVectorLabels=vector(mode="character", length=length(yVector))
+yVectorLabels <- vector(mode = "character", length = length(yVector))
 
-# for each activity label, actually put in a factor variable with the name of the activity
-for(a in 1:6){
-        inds = which(yVector==a)
-        yVectorLabels[inds] <- as.character(activityLabels[a,2])
+# for each activity label, put in a factor variable with the name of the activity
+for(a in 1:6) {
+        inds <- which(yVector == a)
+        yVectorLabels[inds] <- as.character(activityLabels[a, 2])
 }
 
-# loading subject IDs
-subjectTrain = read.table(paste(yourPath, "train/subject_train.txt", sep=""))
-subjectTest = read.table(paste(yourPath, "test/subject_test.txt", sep=""))
+# load subjects
+trainSubject <- read.table("C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\UCI HAR Dataset\\train\\subject_train.txt", sep="")
+testSubject <- read.table("C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\UCI HAR Dataset\\test\\subject_test.txt", sep="")
 
-## renaming IDs to more appropriate 
+# renaming IDs to more appropriate 
 # first create a function to add the word "Subject" to the number ID
-subjectify = function(x){return(paste("Subject", as.character(x), sep=""))}
-# apply said function to every element 
-subjectNamesTest= sapply(subjectTest, FUN=subjectify)
-subjectNamesTrain= sapply(subjectTrain, FUN=subjectify)
+assignSubject = function(x) { return(paste("Subject", as.character(x), sep="")) }
+# apply sapply function to every element 
+namesTestSubject <- sapply(testSubject, FUN = assignSubject)
+namesTrainSubject <- sapply(trainSubject, FUN = assignSubject)
 
-# also merge the test and train subject names
-subjectNamesVector = rbind(subjectNamesTrain, subjectNamesTest)
+# merge the test and train subject names
+subjectNamesVector <- rbind(namesTrainSubject, namesTestSubject)
 
-
-### creating a second dataset that has the means of each variable for each subject
-newData = matrix(ncol=length(names(xMatrixReduced)), nrow=length(unique(subjectNamesVector)))
-rownames(newData) = unique(subjectNamesVector); 
-colnames(newData) = names(xMatrixReduced);
+# create a second dataset to means of each variable for each subject
+newData <- matrix(ncol=length(names(xMatrixReduced)), nrow=length(unique(subjectNamesVector)))
+rownames(newData) <- unique(subjectNamesVector) 
+colnames(newData) <- names(xMatrixReduced)
 
 # for each subject calculate the mean of all variables
 for(s in unique(subjectNamesVector)){
-        w = which(subjectNamesVector == s)
-        cm = colMeans(xMatrixReduced[w,])
-        newData[s,] = cm
+        w <- which(subjectNamesVector == s)
+        cm <- colMeans(xMatrixReduced[w, ])
+        newData[s,] <- cm
 }
-write.csv(newData,file=paste(yourPath, "newData.csv", sep=""))
+
+write.csv(newData, file = "C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\news.csv", sep="")
