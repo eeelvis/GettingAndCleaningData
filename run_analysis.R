@@ -1,11 +1,14 @@
-# load Test and Train files
+# load Test and Train data
 xTrain <- read.table("C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\UCI HAR Dataset\\train\\X_train.txt", sep="")
 yTrain <- read.table("C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\UCI HAR Dataset\\train\\y_train.txt", sep="")
 xTest <- read.table("C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\UCI HAR Dataset\\test\\X_test.txt", sep="")
 yTest <- read.table("C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\UCI HAR Dataset\\test\\y_test.txt", sep="")
 
-# load names
-names <- read.table("C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\UCI HAR Dataset\\features.txt", sep=""); names <- names[,2];
+# load features names
+names <- read.table("C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\UCI HAR Dataset\\features.txt", sep="")
+# catch the second column because the first is the index and I don't need this
+names <- names[, 2]
+# load activity names 
 activityLabels <- read.table("C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\UCI HAR Dataset\\activity_labels.txt", sep="") 
 
 # correctly name the columns of the data
@@ -20,7 +23,7 @@ yVector <- rbind(yTest, yTrain)
 vmeans = grep("[m]ean", names)
 
 # correspondingly update xMatrix
-xMatrixReduced = xMatrix[,vmeans]
+xMatrixReduced = xMatrix[, vmeans]
 
 # create a csv with result of matrix reduced
 write.csv(xMatrixReduced, file = "C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\xMatrixCut.csv", sep="")
