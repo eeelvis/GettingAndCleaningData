@@ -51,15 +51,15 @@ namesTrainSubject <- sapply(trainSubject, FUN = assignSubject)
 subjectNamesVector <- rbind(namesTrainSubject, namesTestSubject)
 
 # create a second dataset to means of each variable for each subject
-newData <- matrix(ncol=length(names(xMatrixReduced)), nrow=length(unique(subjectNamesVector)))
-rownames(newData) <- unique(subjectNamesVector) 
-colnames(newData) <- names(xMatrixReduced)
+news <- matrix(ncol=length(names(xMatrixReduced)), nrow=length(unique(subjectNamesVector)))
+rownames(news) <- unique(subjectNamesVector) 
+colnames(news) <- names(xMatrixReduced)
 
 # for each subject calculate the mean of all variables
 for(s in unique(subjectNamesVector)){
         w <- which(subjectNamesVector == s)
         cm <- colMeans(xMatrixReduced[w, ])
-        newData[s,] <- cm
+        news[s,] <- cm
 }
 
-write.csv(newData, file = "C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\news.csv", sep="")
+write.csv(news, file = "C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\news.csv", sep="")
