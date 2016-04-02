@@ -1,4 +1,4 @@
-Purpose of run_analysis.R and the output files produced by running script.
+Here I describe the purpose of run_analysis.R script and the output files produced by this script.
 
 PS: Sorry about my english. I am not fluent.
 PS2: For more details not mentioned here, read the comments on the code (run_analysis.R).
