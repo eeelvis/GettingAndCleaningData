@@ -1,15 +1,23 @@
 # load Test and Train data
-xTrain <- read.table("C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\UCI HAR Dataset\\train\\X_train.txt", sep="")
-yTrain <- read.table("C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\UCI HAR Dataset\\train\\y_train.txt", sep="")
-xTest <- read.table("C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\UCI HAR Dataset\\test\\X_test.txt", sep="")
-yTest <- read.table("C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\UCI HAR Dataset\\test\\y_test.txt", sep="")
+xTrain <- read.table("./UCI HAR Dataset/train/X_train.txt", sep="")
+yTrain <- read.table("./UCI HAR Dataset/train/y_train.txt", sep="")
+xTest <- read.table("./UCI HAR Dataset/test/X_test.txt", sep="")
+yTest <- read.table("./UCI HAR Dataset/test/y_test.txt", sep="")
 
 # load features names
-names <- read.table("C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\UCI HAR Dataset\\features.txt", sep="")
+names <- read.table("./UCI HAR Dataset/features.txt", sep="")
+# adjust names
+names$V2 <- tolower(names$V2)             ## convert to lower case
+names$V2 <- gsub("\\(\\)", "", names$V2)  ## remove () together
+names$V2 <- gsub("-", "", names$V2)       ## remove -
+names$V2 <- gsub(",", "", names$V2)       ## remove ,
+names$V2 <- gsub("\\(|\\)", "", names$V2) ## remove ( and )
+
 # catch the second column because the first is the index and I don't need this
 names <- names[, 2]
+
 # load activity names 
-activityLabels <- read.table("C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\UCI HAR Dataset\\activity_labels.txt", sep="") 
+activityLabels <- read.table("./UCI HAR Dataset/activity_labels.txt", sep="") 
 
 # correctly name the columns of the data
 names(xTrain) <- names
@@ -25,8 +33,8 @@ vmeans = grep("[m]ean", names)
 # correspondingly update xMatrix
 xMatrixReduced = xMatrix[, vmeans]
 
-# create a csv with result of matrix reduced
-write.csv(xMatrixReduced, file = "C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\xMatrixCut.csv", sep="")
+# create a txt with result of matrix reduced
+write.csv(xMatrixReduced, file = "./xMatrixCut.txt", sep="")
 
 yVectorLabels <- vector(mode = "character", length = length(yVector))
 
@@ -37,8 +45,8 @@ for(a in 1:6) {
 }
 
 # load subjects
-trainSubject <- read.table("C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\UCI HAR Dataset\\train\\subject_train.txt", sep="")
-testSubject <- read.table("C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\UCI HAR Dataset\\test\\subject_test.txt", sep="")
+trainSubject <- read.table("./UCI HAR Dataset/train/subject_train.txt", sep="")
+testSubject <- read.table("./UCI HAR Dataset/test/subject_test.txt", sep="")
 
 # renaming IDs to more appropriate 
 # first create a function to add the word "Subject" to the number ID
@@ -62,4 +70,5 @@ for(s in unique(subjectNamesVector)){
         news[s,] <- cm
 }
 
-write.csv(news, file = "C:\\Users\\elvis.endrigo\\Documents\\Conhecimento\\Getting and Cleaning Data\\W4\\Project\\news.csv", sep="")
+# create a txt with final result
+write.csv(news, file = "./news.txt", sep="")
